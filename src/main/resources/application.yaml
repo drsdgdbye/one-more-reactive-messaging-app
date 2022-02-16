@@ -1,0 +1,12 @@
+#mongodb set up
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      auto-index-creation: true
+
+  #redis set up
+  redis:
+    host: localhost
+    port: 6379
