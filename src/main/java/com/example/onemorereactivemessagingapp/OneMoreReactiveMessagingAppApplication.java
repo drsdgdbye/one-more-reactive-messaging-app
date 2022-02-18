@@ -6,10 +6,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
 @SpringBootApplication
-@PropertySource("classpath:database.properties")
 @EnableReactiveMongoRepositories
+@PropertySource("classpath:database.properties")
 public class OneMoreReactiveMessagingAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(OneMoreReactiveMessagingAppApplication.class, args);
     }
 }
+
