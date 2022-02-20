@@ -2,19 +2,17 @@ package com.example.onemorereactivemessagingapp.controller;
 
 import com.example.onemorereactivemessagingapp.domain.User;
 import com.example.onemorereactivemessagingapp.dto.PostUserDto;
-import com.example.onemorereactivemessagingapp.dto.mapper.MapStructMapper;
 import com.example.onemorereactivemessagingapp.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
-@RestController("users")
+@RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -27,5 +25,11 @@ public class UserController {
     @GetMapping("all")
     public Flux<User> getUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping(value = "hello")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<String> hello(Mono<Principal> principal) {
+        return principal.map(Principal::getName).map(name -> String.format("Hello, %s", name));
     }
 }
