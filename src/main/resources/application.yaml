@@ -14,3 +14,7 @@ spring:
 logging:
   level:
     web: DEBUG
+
+server:
+  error:
+    include-stacktrace: never

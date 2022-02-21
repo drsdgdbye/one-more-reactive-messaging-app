@@ -18,7 +18,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final UserRepository userRepository;
-    private final MapStructMapper mapper;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -28,8 +27,6 @@ public class SecurityConfig {
                 .anyExchange().authenticated()
                 .and()
                 .httpBasic()
-                .and()
-                .formLogin()
                 .and()
                 .build();
     }
