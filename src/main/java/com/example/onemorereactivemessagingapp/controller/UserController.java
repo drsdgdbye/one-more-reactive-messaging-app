@@ -1,10 +1,12 @@
 package com.example.onemorereactivemessagingapp.controller;
 
 import com.example.onemorereactivemessagingapp.domain.User;
+import com.example.onemorereactivemessagingapp.dto.GetUserDto;
+import com.example.onemorereactivemessagingapp.dto.InviteDto;
 import com.example.onemorereactivemessagingapp.dto.PostUserDto;
 import com.example.onemorereactivemessagingapp.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +16,7 @@ import java.security.Principal;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "users")
 public class UserController {
     private final UserService userService;
 
@@ -22,14 +25,25 @@ public class UserController {
         return userService.addNewUser(postUserDto);
     }
 
-    @GetMapping("all")
-    public Flux<User> getUsers() {
-        return userService.getAllUsers();
+    @GetMapping("contacts")
+    public Flux<GetUserDto> getContacts(Principal principal) {
+        return userService.getContactsOfUser(principal);
     }
 
-    @GetMapping(value = "hello")
-    @ResponseStatus(HttpStatus.OK)
-    public Mono<String> hello(Mono<Principal> principal) {
-        return principal.map(Principal::getName).map(name -> String.format("Hello, %s", name));
+    @PostMapping("invite-to-contacts")
+    public Mono<ResponseEntity<InviteDto>> inviteUserToContacts(@RequestBody @Valid InviteDto inviteDto) {
+        return Mono.just(inviteDto)
+                .flatMap(userService::createInvite)
+                .flatMap(dto -> Mono.just(ResponseEntity.ok().body(dto)));
+    }
+
+    @GetMapping("invites")
+    public Flux<InviteDto> getInvites(Principal forPrincipal) {
+        return userService.getAllInvites(forPrincipal);
+    }
+
+    @PostMapping(value = "approve")
+    public Mono<Void> approveInvite(@RequestBody @Valid InviteDto inviteDto) {
+        return userService.addToContactsOrDiscard(inviteDto);
     }
 }

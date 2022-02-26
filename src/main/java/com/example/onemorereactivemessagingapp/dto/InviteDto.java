@@ -5,11 +5,11 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class GetUserDto {
-    @NotNull
+public class InviteDto {
     private String id;
     @NotNull
-    private String username;
-    private boolean active;
-    private String userPic;
+    private String from;
+    @NotNull
+    private String to;
+    private boolean approved;
 }
