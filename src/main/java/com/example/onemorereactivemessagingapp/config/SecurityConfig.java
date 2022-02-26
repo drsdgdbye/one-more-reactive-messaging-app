@@ -24,6 +24,7 @@ public class SecurityConfig {
         return http
                 .cors().and().csrf().disable()
                 .authorizeExchange()
+                .pathMatchers("/users/register").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .httpBasic()

@@ -1,9 +1,8 @@
 package com.example.onemorereactivemessagingapp.controller;
 
-import com.example.onemorereactivemessagingapp.domain.User;
 import com.example.onemorereactivemessagingapp.dto.GetUserDto;
 import com.example.onemorereactivemessagingapp.dto.InviteDto;
-import com.example.onemorereactivemessagingapp.dto.PostUserDto;
+import com.example.onemorereactivemessagingapp.dto.NewUserDto;
 import com.example.onemorereactivemessagingapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
 @RestController
@@ -20,9 +20,9 @@ import java.security.Principal;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("add")
-    public Mono<User> addUser(@RequestBody @Valid PostUserDto postUserDto) {
-        return userService.addNewUser(postUserDto);
+    @PostMapping("register")
+    public Mono<GetUserDto> addNewUser(@RequestBody @NotNull @Valid NewUserDto newUserDto) {
+        return userService.addNewUser(newUserDto);
     }
 
     @GetMapping("contacts")

@@ -1,17 +1,19 @@
 package com.example.onemorereactivemessagingapp.service;
 
+import com.example.onemorereactivemessagingapp.config.SecurityConfig;
 import com.example.onemorereactivemessagingapp.domain.Invite;
 import com.example.onemorereactivemessagingapp.domain.User;
 import com.example.onemorereactivemessagingapp.dto.GetUserDto;
 import com.example.onemorereactivemessagingapp.dto.InviteDto;
+import com.example.onemorereactivemessagingapp.dto.NewUserDto;
 import com.example.onemorereactivemessagingapp.dto.PostUserDto;
 import com.example.onemorereactivemessagingapp.dto.mapper.MapStructMapper;
 import com.example.onemorereactivemessagingapp.repository.InviteRepository;
 import com.example.onemorereactivemessagingapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,7 +21,6 @@ import reactor.core.scheduler.Schedulers;
 
 import java.security.Principal;
 
-//todo: при регистрации создавать новые листы
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -27,9 +28,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final InviteRepository inviteRepository;
     private final MapStructMapper mapper;
+    private final PasswordEncoder encoder;
 
-    public Mono<User> addNewUser(PostUserDto postUserDto) {
-        return userRepository.save(mapper.postUserDtoToUser(postUserDto));
+    public Mono<GetUserDto> addNewUser(NewUserDto newUserDto) {
+        return userRepository.findByUsername(newUserDto.getUsername())
+                .switchIfEmpty(userRepository.save(mapper.newUserDtoToUser(newUserDto)))
+                        .flatMap(u -> {
+                            u.setPassword(encoder.encode(u.getPassword()));
+                            log.info(u + " created");
+                            return Mono.just(mapper.userToGetUserDto(u));
+                        });
     }
 
     public Mono<InviteDto> createInvite(InviteDto inviteDto) {

@@ -3,10 +3,7 @@ package com.example.onemorereactivemessagingapp.dto.mapper;
 import com.example.onemorereactivemessagingapp.domain.Chat;
 import com.example.onemorereactivemessagingapp.domain.Invite;
 import com.example.onemorereactivemessagingapp.domain.User;
-import com.example.onemorereactivemessagingapp.dto.CreateChatDto;
-import com.example.onemorereactivemessagingapp.dto.GetUserDto;
-import com.example.onemorereactivemessagingapp.dto.InviteDto;
-import com.example.onemorereactivemessagingapp.dto.PostUserDto;
+import com.example.onemorereactivemessagingapp.dto.*;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -20,4 +17,8 @@ public interface MapStructMapper {
     InviteDto inviteToInviteDto(Invite invite);
 
     Invite inviteDtoToInvite(InviteDto inviteDto);
+
+    User newUserDtoToUser(NewUserDto newUserDto);
+
+    NewUserDto userToNewUserDto(User user);
 }
